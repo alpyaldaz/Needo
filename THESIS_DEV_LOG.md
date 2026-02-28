@@ -252,4 +252,70 @@ This structure implements **Clean Architecture**, ensuring:
 
 
 
+## [2026-02-28] Phase 11 & 12: Real-Time Communication System
 
+### Action: Implementation of Real-Time Chat (Sockets via Firestore)
+**Context:** To facilitate negotiation and service coordination, users need a seamless, real-time messaging system within the application, eliminating the need to share personal phone numbers.
+**Implementation Pipeline:**
+1.  **Domain & Data Modeling:**
+    * Designed `ChatRoomEntity` to store room metadata (`participants`, `lastMessage`, `lastMessageTime`).
+    * Designed `ChatMessageEntity` for individual message payloads (`senderId`, `message`, `timestamp`).
+    * **NoSQL Structure:** Utilized a hierarchical document structure: `chat_rooms/{roomId}/messages/{messageId}`. This ensures that querying a chat room's messages does not require reading unrelated rooms, optimizing Firestore read operations and costs.
+2.  **Repository Methods:** Implemented `createOrGetChatRoom` (to prevent duplicate rooms between the same users) and `getMessagesStream` (to push real-time updates to the UI).
+3.  **Presentation (UI):** Built `ChatScreen` utilizing a `StreamBuilder` to render a standard "Chat Bubble" interface (Right-aligned/Primary color for current user, Left-aligned/Grey for the recipient).
+
+**Academic Justification:**
+* **Event-Driven Architecture:** Utilizing Firestore's native WebSocket connection (`snapshots()`) demonstrates an understanding of event-driven, real-time data synchronization across distributed mobile clients without implementing custom socket servers.
+
+
+## [2026-02-28] Phase 13: Centralized Inbox & Navigation Optimization
+
+### Action: Implementation of Chat List Screen
+**Implementation Pipeline:**
+1.  **Data Layer:** Implemented `getUserChatRooms` stream to query the `chat_rooms` collection where the `participants` array contains the current user's ID, ordered by `lastMessageTime` descending.
+2.  **Presentation (UI):** Built `ChatListScreen` serving as a centralized Inbox.
+3.  **Integration:** Injected the new screen into the `MainLayout`'s `BottomNavigationBar` (Messages Tab), providing global access to ongoing conversations.
+4.  **Routing Bug Fix:** Addressed a critical state pollution and routing payload error where `otherUserId` was incorrectly passed instead of `roomId`, preventing hard crashes (Red Screen of Death) during navigation.
+
+**Academic Justification:**
+* **Information Architecture:** Moving from deeply nested chat access (via job details) to a top-level Bottom Navigation Tab significantly improves the application's Information Architecture and overall discoverability (Nielsen's Heuristics).
+
+
+## [2026-02-28] Phase 14: Dynamic Showcase & Data Robustness
+
+### Action: Home Screen Revamp & Null-Safety Audit
+**Implementation Pipeline:**
+1.  **Dynamic Vitrine:** Refactored the `CustomerHomeScreen` to replace static UI placeholders with live database queries. Implemented `GetTopProvidersUseCase` to fetch providers ordered by their `averageRating`.
+2.  **Data Robustness (Null-Safety):** Conducted a rigorous audit of all Model classes (`UserModel`, `ServiceRequestModel`, etc.).
+    * Replaced unsafe type casting (`as String`) with null-aware operators (`??`) and default fallbacks.
+    * Ensured the application gracefully degrades when encountering incomplete legacy data (e.g., test users missing a `category` field) rather than throwing unhandled exceptions.
+
+**Academic Justification:**
+* **Graceful Degradation & Fault Tolerance:** The implementation of rigorous null-checking demonstrates a mature approach to software engineering, ensuring system stability and continuous operation even when the underlying data schema evolves or legacy data is malformed.
+
+
+## [2026-02-28] Phase 15: Business Model Clarification (Lead Generation)
+
+### Action: UI/UX Enforcement of the Matchmaking Model
+**Context:** The strategic decision was made to operate strictly as a "Lead Generation" platform, excluding in-app payment processing (e.g., Stripe/PayPal) to maintain MVP scope and avoid regulatory complexities.
+**Implementation Pipeline:**
+1.  **UI Indicators:** Injected strategic, non-intrusive informational banners and subtitles across critical user journeys:
+    * `CreateRequestScreen`: Added an info banner clarifying that payments are handled directly (Cash/Transfer).
+    * `RequestDetailScreen` & `ProviderJobDetailScreen`: Appended "Direct to Provider" labels beneath budget and price displays.
+    * `ProviderPublicProfileScreen`: Added "Paid directly" micro-copy beneath the hourly rate statistic.
+
+**Academic Justification:**
+* **System Transparency:** By explicitly communicating the boundary of the system's responsibility (matchmaking vs. payment processing) through the UI, the application builds user trust and aligns user expectations with the system's capabilities, a core principle of UX design.
+
+
+## [2026-02-28] Phase 16: Profile Management & Role Flexibility
+
+### Action: Implementation of Edit Profile Module
+**Implementation Pipeline:**
+1.  **Domain & Data:** Extended `UpdateUserProfileUseCase` to accept new fields (`firstName`, `lastName`, `phone`, `about`, `category`).
+2.  **Presentation (UI):** Built a text-based `EditProfileScreen`. Deliberately excluded image uploading (Firebase Storage) to adhere to strict MVP constraints and minimize bug surface area prior to thesis submission.
+3.  **Dynamic Role Management:** Implemented a 'Profession Switcher' (Dropdown) exclusively for Provider accounts.
+    * *Optimization:* Instead of migrating the database schema to support an array of categories (`List<String>`), the UI provides a mechanism to swap the single active `category` string. This allows providers to pivot their offered services without breaking existing downstream querying logic.
+
+**Academic Justification:**
+* **Scope Management & MVP Focus:** The deliberate exclusion of complex media handling in favor of robust text-based management illustrates effective project scoping and prioritization, ensuring the core marketplace loop remains stable and demonstrable for the thesis defense.
