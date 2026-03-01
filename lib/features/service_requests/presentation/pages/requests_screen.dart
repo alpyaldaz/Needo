@@ -56,6 +56,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
           length: 2,
           child: Scaffold(
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               title: Text(isProvider ? 'My Jobs' : 'My Requests'),
               bottom: const TabBar(
                 indicatorColor: Color(0xFF135BEC),

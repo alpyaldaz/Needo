@@ -53,6 +53,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F8),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Messages',
           style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),

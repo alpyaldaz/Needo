@@ -59,6 +59,7 @@ class ProfileScreen extends StatelessWidget {
       backgroundColor: Colors.white.withValues(alpha: 0.95),
       elevation: 0,
       centerTitle: true,
+      automaticallyImplyLeading: false,
       title: Text(
         'Profile Settings',
         style: GoogleFonts.inter(
