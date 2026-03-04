@@ -80,7 +80,7 @@ class _ProviderPublicProfileScreenState
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
       pinned: true,
-      backgroundColor: Colors.white.withOpacity(0.95),
+      backgroundColor: Colors.white.withValues(alpha: 0.95),
       elevation: 0,
       centerTitle: true,
       leading: IconButton(
@@ -154,10 +154,6 @@ class _ProviderPublicProfileScreenState
             );
           },
         ),
-        IconButton(
-          icon: const Icon(Icons.share, color: Colors.black87),
-          onPressed: () {},
-        ),
       ],
     );
   }
@@ -184,7 +180,7 @@ class _ProviderPublicProfileScreenState
                     border: Border.all(color: Colors.white, width: 4),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 10,
                         spreadRadius: 2,
                       ),
@@ -201,7 +197,7 @@ class _ProviderPublicProfileScreenState
                         )
                       : CircleAvatar(
                           radius: 56,
-                          backgroundColor: const Color(0xFF135BEC),
+                          backgroundColor: const Color(0xFFACC8A2),
                           child: Text(
                             _getInitials(displayName),
                             style: GoogleFonts.inter(
@@ -222,7 +218,7 @@ class _ProviderPublicProfileScreenState
                     ),
                     child: const Icon(
                       Icons.verified,
-                      color: Color(0xFF135BEC),
+                      color: Color(0xFFACC8A2),
                       size: 28,
                     ),
                   ),
@@ -260,7 +256,7 @@ class _ProviderPublicProfileScreenState
                 Container(width: 1, height: 40, color: Colors.grey.shade300),
                 _buildStatColumn(
                   provider.hourlyRate != null
-                      ? '\$${provider.hourlyRate!.toStringAsFixed(0)}/hr'
+                      ? '${provider.hourlyRate!.toStringAsFixed(0)} PLN/hr'
                       : 'N/A',
                   'Rate',
                   subtitle: 'Paid directly',
@@ -653,7 +649,7 @@ class _ProviderPublicProfileScreenState
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, -5),
             ),
@@ -678,7 +674,7 @@ class _ProviderPublicProfileScreenState
                       ),
                     ),
                     Text(
-                      '\$${widget.bidPrice?.toStringAsFixed(2) ?? '--'}',
+                      '${widget.bidPrice?.toStringAsFixed(2) ?? '--'} PLN',
                       style: GoogleFonts.inter(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,

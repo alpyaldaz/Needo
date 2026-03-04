@@ -174,12 +174,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   children: [
                     // Category Dropdown
                     DropdownButtonFormField<String>(
-                      value: _selectedCategory,
+                      initialValue: _selectedCategory,
                       decoration: InputDecoration(
                         labelText: 'Service Category',
                         prefixIcon: const Icon(
                           Icons.category_outlined,
-                          color: Color(0xFF135BEC),
+                          color: Color(0xFFACC8A2),
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -192,7 +192,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Color(0xFF135BEC),
+                            color: Color(0xFFACC8A2),
                           ),
                         ),
                         filled: true,
@@ -222,7 +222,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           padding: EdgeInsets.only(bottom: 56),
                           child: Icon(
                             Icons.info_outline,
-                            color: Color(0xFF135BEC),
+                            color: Color(0xFFACC8A2),
                           ),
                         ),
                         border: OutlineInputBorder(
@@ -236,7 +236,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Color(0xFF135BEC),
+                            color: Color(0xFFACC8A2),
                           ),
                         ),
                         filled: true,
@@ -268,7 +268,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: ElevatedButton(
                       onPressed: isLoading ? null : _save,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF135BEC),
+                        backgroundColor: const Color(0xFFACC8A2),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -323,7 +323,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -346,7 +346,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: const Color(0xFF135BEC)),
+        prefixIcon: Icon(icon, color: const Color(0xFFACC8A2)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade200),
@@ -357,7 +357,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF135BEC)),
+          borderSide: const BorderSide(color: Color(0xFFACC8A2)),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

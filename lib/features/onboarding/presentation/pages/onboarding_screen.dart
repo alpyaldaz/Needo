@@ -118,7 +118,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             radius: 100,
                             backgroundColor: Theme.of(
                               context,
-                            ).primaryColor.withOpacity(0.1),
+                            ).primaryColor.withValues(alpha: 0.1),
                             child: Icon(
                               _getIconData(page['icon']!),
                               size: 100,

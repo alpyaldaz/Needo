@@ -117,8 +117,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       pinned: true,
                       delegate: _SliverAppBarDelegate(
                         const TabBar(
-                          indicatorColor: Color(0xFF135BEC),
-                          labelColor: Color(0xFF135BEC),
+                          indicatorColor: Color(0xFFACC8A2),
+                          labelColor: Color(0xFFACC8A2),
                           unselectedLabelColor: Colors.grey,
                           tabs: [
                             Tab(text: "Active"),
@@ -249,7 +249,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         )
                       : CircleAvatar(
                           radius: 56,
-                          backgroundColor: const Color(0xFF135BEC),
+                          backgroundColor: const Color(0xFFACC8A2),
                           child: Text(
                             _getInitials(displayName),
                             style: GoogleFonts.inter(
@@ -271,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       child: const Icon(
                         Icons.verified,
-                        color: Color(0xFF135BEC),
+                        color: Color(0xFFACC8A2),
                         size: 28,
                       ),
                     ),
@@ -310,7 +310,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Container(width: 1, height: 40, color: Colors.grey.shade300),
                   _buildStatColumn(
                     user.hourlyRate != null
-                        ? '\$${user.hourlyRate!.toStringAsFixed(0)}/hr'
+                        ? '${user.hourlyRate!.toStringAsFixed(0)} PLN/hr'
                         : 'N/A',
                     'Rate',
                   ),
@@ -580,7 +580,7 @@ class _HistoryCard extends StatelessWidget {
         statusColor = Colors.red;
         break;
       default:
-        statusColor = Colors.blue;
+        statusColor = const Color(0xFFACC8A2);
     }
 
     return Card(
@@ -668,7 +668,11 @@ class _HistoryCard extends StatelessWidget {
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   const Spacer(),
-                  const Icon(Icons.attach_money, size: 14, color: Colors.green),
+                  const Icon(
+                    Icons.payments_outlined,
+                    size: 14,
+                    color: Colors.green,
+                  ),
                   Text(
                     request.priceRange,
                     style: const TextStyle(

@@ -54,8 +54,9 @@ class UserModel extends UserEntity {
     if (providerCategory != null) map['providerCategory'] = providerCategory!;
     if (hourlyRate != null) map['hourlyRate'] = hourlyRate!;
     if (profileImageUrl != null) map['profileImageUrl'] = profileImageUrl!;
-    if (googleBusinessUrl != null)
+    if (googleBusinessUrl != null) {
       map['googleBusinessUrl'] = googleBusinessUrl!;
+    }
     if (about != null) map['about'] = about!;
     if (phone != null) map['phone'] = phone!;
     map['ratingDistribution'] = {

@@ -105,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
                         )
                       : CircleAvatar(
                           radius: 56,
-                          backgroundColor: const Color(0xFF135BEC),
+                          backgroundColor: const Color(0xFFACC8A2),
                           child: Text(
                             _getInitials(displayName),
                             style: GoogleFonts.inter(
@@ -127,7 +127,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       child: const Icon(
                         Icons.verified,
-                        color: Color(0xFF135BEC),
+                        color: Color(0xFFACC8A2),
                         size: 28,
                       ),
                     ),
@@ -166,7 +166,7 @@ class ProfileScreen extends StatelessWidget {
                   Container(width: 1, height: 40, color: Colors.grey.shade300),
                   _buildStatColumn(
                     user.hourlyRate != null
-                        ? '\$${user.hourlyRate!.toStringAsFixed(0)}/hr'
+                        ? '${user.hourlyRate!.toStringAsFixed(0)} PLN/hr'
                         : 'N/A',
                     'Rate',
                   ),

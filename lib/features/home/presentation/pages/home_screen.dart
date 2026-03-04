@@ -8,6 +8,7 @@ import 'package:needo/features/auth/domain/usecases/get_top_providers_usecase.da
 import 'package:needo/features/home/domain/entities/category_entity.dart';
 import 'package:needo/features/home/presentation/bloc/home_cubit.dart';
 import 'package:needo/features/home/presentation/bloc/home_state.dart';
+import 'package:needo/features/home/presentation/bloc/location_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -33,7 +34,6 @@ class _HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<_HomeView> {
-  String _currentLocation = 'Warsaw, Poland';
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
@@ -44,12 +44,13 @@ class _HomeViewState extends State<_HomeView> {
   }
 
   void _showLocationPicker() {
+    final locationCubit = context.read<LocationCubit>();
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
+      builder: (sheetContext) {
         final cities = [
           'Warsaw, Poland',
           'Krakow, Poland',
@@ -57,34 +58,37 @@ class _HomeViewState extends State<_HomeView> {
           'Poznan, Poland',
           'Gdansk, Poland',
         ];
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 16),
-              const Text(
-                'Select Location',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        return BlocBuilder<LocationCubit, String>(
+          bloc: locationCubit,
+          builder: (context, currentLocation) {
+            return SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Select Location',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  ...cities.map(
+                    (city) => ListTile(
+                      leading: const Icon(Icons.location_city),
+                      title: Text(city),
+                      trailing: currentLocation == city
+                          ? const Icon(Icons.check, color: Color(0xFFACC8A2))
+                          : null,
+                      onTap: () {
+                        locationCubit.selectLocation(city);
+                        Navigator.pop(sheetContext);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
-              const SizedBox(height: 16),
-              ...cities.map(
-                (city) => ListTile(
-                  leading: const Icon(Icons.location_city),
-                  title: Text(city),
-                  trailing: _currentLocation == city
-                      ? const Icon(Icons.check, color: Color(0xFF135BEC))
-                      : null,
-                  onTap: () {
-                    setState(() {
-                      _currentLocation = city;
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -129,11 +133,11 @@ class _HomeViewState extends State<_HomeView> {
                                     const Icon(
                                       Icons.location_on,
                                       size: 16,
-                                      color: Color(0xFF135BEC),
+                                      color: Color(0xFFACC8A2),
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      _currentLocation,
+                                      context.watch<LocationCubit>().state,
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -147,33 +151,6 @@ class _HomeViewState extends State<_HomeView> {
                                       color: Colors.grey.shade600,
                                     ),
                                   ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Stack(
-                              children: [
-                                const Icon(
-                                  Icons.notifications_none,
-                                  color: Colors.black87,
-                                ),
-                                Positioned(
-                                  right: 2,
-                                  top: 2,
-                                  child: Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -285,7 +262,9 @@ class _HomeViewState extends State<_HomeView> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE8F0FE),
+                              color: const Color(
+                                0xFFACC8A2,
+                              ).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Text(
@@ -293,7 +272,7 @@ class _HomeViewState extends State<_HomeView> {
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF135BEC),
+                                color: Color(0xFFACC8A2),
                               ),
                             ),
                           ),
@@ -353,8 +332,8 @@ class _HomeViewState extends State<_HomeView> {
       {
         'name': 'Cleaning',
         'icon': Icons.cleaning_services,
-        'color': const Color(0xFF135BEC),
-        'bg': const Color(0xFFE8F0FE),
+        'color': const Color(0xFFACC8A2),
+        'bg': const Color(0xFFACC8A2).withValues(alpha: 0.15),
       },
       {
         'name': 'Plumbing',
@@ -505,8 +484,9 @@ class _HomeViewState extends State<_HomeView> {
         : provider.email;
     final initials = () {
       final parts = displayName.trim().split(' ');
-      if (parts.length >= 2)
+      if (parts.length >= 2) {
         return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+      }
       return displayName.isNotEmpty ? displayName[0].toUpperCase() : '?';
     }();
 
@@ -527,7 +507,7 @@ class _HomeViewState extends State<_HomeView> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -545,7 +525,7 @@ class _HomeViewState extends State<_HomeView> {
                   )
                 : CircleAvatar(
                     radius: 32,
-                    backgroundColor: const Color(0xFF135BEC),
+                    backgroundColor: const Color(0xFFACC8A2),
                     child: Text(
                       initials,
                       style: GoogleFonts.inter(

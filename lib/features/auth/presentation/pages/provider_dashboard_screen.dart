@@ -190,7 +190,7 @@ class _JobCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      '\$${job.priceRange}',
+                      '${job.priceRange} PLN',
                       style: TextStyle(
                         color: Colors.green.shade800,
                         fontWeight: FontWeight.bold,

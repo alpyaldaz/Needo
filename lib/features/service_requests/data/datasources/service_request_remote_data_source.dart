@@ -23,6 +23,7 @@ abstract class ServiceRequestRemoteDataSource {
   Stream<List<ServiceRequestModel>> getProviderJobs(String providerId);
   Future<void> cancelRequest(String requestId);
   Future<BidModel> placeBid(BidModel bid);
+  Future<void> declineBid(String requestId, String bidId);
   Stream<List<BidModel>> getBidsForRequest(String requestId);
   Future<void> acceptBid(
     String requestId,
@@ -178,6 +179,20 @@ class ServiceRequestRemoteDataSourceImpl
         note: bid.note,
         createdAt: bid.createdAt,
       );
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> declineBid(String requestId, String bidId) async {
+    try {
+      await firestore
+          .collection('requests')
+          .doc(requestId)
+          .collection('bids')
+          .doc(bidId)
+          .delete();
     } catch (e) {
       throw ServerException(message: e.toString());
     }

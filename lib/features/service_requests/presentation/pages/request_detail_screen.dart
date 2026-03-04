@@ -117,6 +117,14 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
               ),
             );
             Navigator.pop(context);
+          } else if (state is BidDeclinedSuccess) {
+            // Added this block
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+              ),
+            );
           } else if (state is JobCompletedSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -254,13 +262,18 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
+                      color: const Color(0xFFACC8A2).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue.shade200),
+                      border: Border.all(
+                        color: const Color(0xFFACC8A2).withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.check_circle, color: Colors.blue.shade700),
+                        const Icon(
+                          Icons.check_circle,
+                          color: Color(0xFFACC8A2),
+                        ),
                         const SizedBox(width: 12),
                         const Expanded(
                           child: Text(
@@ -339,8 +352,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                           ),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            side: BorderSide(color: Colors.blue.shade700),
-                            foregroundColor: Colors.blue.shade700,
+                            side: const BorderSide(color: Color(0xFFACC8A2)),
+                            foregroundColor: const Color(0xFFACC8A2),
                           ),
                         ),
                       );
@@ -367,7 +380,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                         _isActionLoading ? 'PROCESSING...' : 'COMPLETE JOB',
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700,
+                        backgroundColor: const Color(0xFFACC8A2),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
@@ -399,7 +412,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
         icon: Icons.send_rounded,
         label: 'Request Created',
         date: currentRequest.createdAt,
-        color: Colors.blue,
+        color: Theme.of(context).primaryColor,
         isCompleted: true,
       ),
     );
@@ -782,17 +795,19 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                               );
                             },
                             child: Text(
-                              bid.providerName,
+                              bid.providerName.trim().isEmpty
+                                  ? 'Provider'
+                                  : bid.providerName,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF135BEC),
+                                color: Color(0xFFACC8A2),
                                 decoration: TextDecoration.underline,
                               ),
                             ),
                           ),
                           Text(
-                            '\$${bid.amount.toStringAsFixed(2)}',
+                            '${bid.amount.toStringAsFixed(2)} PLN',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -814,13 +829,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                               onPressed: _isActionLoading
                                   ? null
                                   : () {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Bid from ${bid.providerName} declined.',
-                                          ),
+                                      context.read<ServiceRequestBloc>().add(
+                                        DeclineBidEvent(
+                                          requestId: currentRequest.id,
+                                          bidId: bid.id,
                                         ),
                                       );
                                     },
@@ -884,7 +896,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   Widget _buildDetailRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, color: Colors.blue.shade700, size: 28),
+        Icon(icon, color: const Color(0xFFACC8A2), size: 28),
         const SizedBox(width: 16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -928,7 +940,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       case 'open':
         return Colors.green;
       case 'in progress':
-        return Colors.blue;
+        return const Color(0xFFACC8A2);
       case 'completed':
         return Colors.purple;
       case 'cancelled':
@@ -999,7 +1011,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade700,
+                  backgroundColor: const Color(0xFFACC8A2),
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('SUBMIT'),

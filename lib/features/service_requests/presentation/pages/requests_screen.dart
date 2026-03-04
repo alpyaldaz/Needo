@@ -59,8 +59,8 @@ class _RequestsScreenState extends State<RequestsScreen> {
               automaticallyImplyLeading: false,
               title: Text(isProvider ? 'My Jobs' : 'My Requests'),
               bottom: const TabBar(
-                indicatorColor: Color(0xFF135BEC),
-                labelColor: Color(0xFF135BEC),
+                indicatorColor: Color(0xFFACC8A2),
+                labelColor: Color(0xFFACC8A2),
                 unselectedLabelColor: Colors.grey,
                 tabs: [
                   Tab(text: "Active"),
@@ -171,7 +171,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
               statusColor = Colors.red;
               break;
             default:
-              statusColor = Colors.blue;
+              statusColor = const Color(0xFFACC8A2);
           }
 
           return Card(
@@ -227,7 +227,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: statusColor.withOpacity(0.1),
+                            color: statusColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -268,7 +268,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
                         ),
                         const Spacer(),
                         const Icon(
-                          Icons.attach_money,
+                          Icons.payments_outlined,
                           size: 14,
                           color: Colors.green,
                         ),

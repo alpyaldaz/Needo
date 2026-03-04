@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF135BEC),
+                backgroundColor: const Color(0xFFACC8A2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(
-                  color: Color(0xFF135BEC),
+                  color: Color(0xFFACC8A2),
                   width: 1.5,
                 ),
               ),
@@ -234,18 +234,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         // 1. Logo
                         Align(
                           alignment: Alignment.center,
-                          child: Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF135BEC).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: const Icon(
-                              Icons.handyman_outlined,
-                              size: 40,
-                              color: Color(0xFF135BEC),
-                            ),
+                          child: Image.asset(
+                            'assets/images/logo.png',
+                            height: 120,
                           ),
                         ),
                         const SizedBox(height: 32),
@@ -317,7 +308,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Text(
                               'Forgot password?',
                               style: TextStyle(
-                                color: Color(0xFF135BEC),
+                                color: Color(0xFFACC8A2),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -329,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ElevatedButton(
                           onPressed: state is AuthLoading ? null : _login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF135BEC),
+                            backgroundColor: const Color(0xFFACC8A2),
                             foregroundColor: Colors.white,
                             minimumSize: const Size(double.infinity, 56),
                             shape: RoundedRectangleBorder(
@@ -380,7 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: const Text(
                                 'Create an account',
                                 style: TextStyle(
-                                  color: Color(0xFF135BEC),
+                                  color: Color(0xFFACC8A2),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

@@ -45,6 +45,15 @@ class BidPlacedSuccess extends ServiceRequestState {
   List<Object> get props => [message];
 }
 
+class BidDeclinedSuccess extends ServiceRequestState {
+  final String message;
+
+  const BidDeclinedSuccess({this.message = "Bid declined successfully."});
+
+  @override
+  List<Object> get props => [message];
+}
+
 class ServiceRequestCancelled extends ServiceRequestState {}
 
 class ServiceRequestsLoaded extends ServiceRequestState {

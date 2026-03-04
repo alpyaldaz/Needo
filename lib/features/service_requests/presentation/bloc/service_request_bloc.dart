@@ -9,6 +9,7 @@ import 'package:needo/features/service_requests/domain/usecases/cancel_request_u
 import 'package:needo/features/service_requests/domain/usecases/get_open_requests_by_category_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/place_bid_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/get_bids_for_request_usecase.dart';
+import 'package:needo/features/service_requests/domain/usecases/decline_bid_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/accept_bid_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/complete_job_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/rate_provider_usecase.dart';
@@ -27,6 +28,7 @@ class ServiceRequestBloc
   final GetOpenRequestsByCategoryUseCase getOpenRequestsByCategoryUseCase;
   final PlaceBidUseCase placeBidUseCase;
   final GetBidsForRequestUseCase getBidsForRequestUseCase;
+  final DeclineBidUseCase declineBidUseCase;
   final AcceptBidUseCase acceptBidUseCase;
   final CompleteJobUseCase completeJobUseCase;
   final RateProviderUseCase rateProviderUseCase;
@@ -47,6 +49,7 @@ class ServiceRequestBloc
     required this.getOpenRequestsByCategoryUseCase,
     required this.placeBidUseCase,
     required this.getBidsForRequestUseCase,
+    required this.declineBidUseCase,
     required this.acceptBidUseCase,
     required this.completeJobUseCase,
     required this.rateProviderUseCase,
@@ -66,6 +69,7 @@ class ServiceRequestBloc
     on<LoadBidsForRequestEvent>(_onLoadBidsForRequest);
     on<_ServiceRequestBidsLoadedEvent>(_onBidsLoaded);
     on<_ServiceRequestBidsErrorEvent>(_onBidsError);
+    on<DeclineBidEvent>(_onDeclineBid);
     on<AcceptBidEvent>(_onAcceptBid);
     on<CompleteJobEvent>(_onCompleteJob);
     on<RateProviderEvent>(_onRateProvider);
@@ -234,7 +238,7 @@ class ServiceRequestBloc
       id: '',
       requestId: event.requestId,
       providerId: currentUser.uid,
-      providerName: currentUser.displayName ?? 'Provider',
+      providerName: event.providerName,
       amount: event.price,
       note: event.note,
       createdAt: DateTime.now(),
@@ -284,6 +288,27 @@ class ServiceRequestBloc
     Emitter<ServiceRequestState> emit,
   ) {
     emit(ServiceRequestBidsError(event.message));
+  }
+
+  // ──────────────────────────────────────────────
+  // DECLINE BID
+  // ──────────────────────────────────────────────
+
+  Future<void> _onDeclineBid(
+    DeclineBidEvent event,
+    Emitter<ServiceRequestState> emit,
+  ) async {
+    emit(ServiceRequestActionLoading());
+
+    final result = await declineBidUseCase(
+      DeclineBidParams(requestId: event.requestId, bidId: event.bidId),
+    );
+
+    result.fold((failure) => emit(ServiceRequestError(failure.message)), (_) {
+      emit(const BidDeclinedSuccess());
+      // Reload bids for this request so the UI updates
+      add(LoadBidsForRequestEvent(event.requestId));
+    });
   }
 
   // ──────────────────────────────────────────────

@@ -34,6 +34,8 @@ abstract class ServiceRequestRepository {
 
   Stream<Either<Failure, List<BidEntity>>> getBidsForRequest(String requestId);
 
+  Future<Either<Failure, void>> declineBid(String requestId, String bidId);
+
   Future<Either<Failure, void>> acceptBid(
     String requestId,
     String bidId,

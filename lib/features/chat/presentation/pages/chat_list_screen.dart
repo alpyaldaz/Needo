@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:needo/config/routes.dart';
 import 'package:needo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:needo/features/auth/presentation/bloc/auth_state.dart';
@@ -16,6 +17,9 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
+  // Cache fetched names so we don't re-fetch on every rebuild
+  final Map<String, String> _userNameCache = {};
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +33,30 @@ class _ChatListScreenState extends State<ChatListScreen> {
         LoadUserChatRoomsEvent(currentUserId: authState.user.id),
       );
     }
+  }
+
+  Future<String> _fetchUserName(String userId) async {
+    if (_userNameCache.containsKey(userId)) {
+      return _userNameCache[userId]!;
+    }
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (doc.exists && doc.data() != null) {
+        final data = doc.data()!;
+        final firstName = data['firstName'] as String? ?? '';
+        final lastName = data['lastName'] as String? ?? '';
+        final name = '$firstName $lastName'.trim();
+        final displayName = name.isNotEmpty
+            ? name
+            : (data['name'] as String? ?? 'User');
+        _userNameCache[userId] = displayName;
+        return displayName;
+      }
+    } catch (_) {}
+    return 'User';
   }
 
   String _formatTime(DateTime time) {
@@ -123,64 +151,68 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   itemBuilder: (context, index) {
                     final room = rooms[index];
                     // Find the OTHER participant's ID
-                    room.participants.firstWhere(
+                    final otherUserId = room.participants.firstWhere(
                       (id) => id != currentUser.id,
                       orElse: () => 'Unknown',
                     );
 
-                    // TODO: We need a way to fetch the other user's actual profile details
-                    // For now, we will just show 'User' if we don't have their info cached.
-                    // This could be improved by fetching the user document or embedding minimal user info in the chat_room document.
-                    final tempName = "User";
-                    final initial = tempName[0].toUpperCase();
+                    return FutureBuilder<String>(
+                      future: _fetchUserName(otherUserId),
+                      builder: (context, snapshot) {
+                        final displayName = snapshot.data ?? 'User';
+                        final initial = displayName.isNotEmpty
+                            ? displayName[0].toUpperCase()
+                            : 'U';
 
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      tileColor: Colors.white,
-                      leading: CircleAvatar(
-                        radius: 24,
-                        backgroundColor: const Color(
-                          0xFF135BEC,
-                        ).withOpacity(0.1),
-                        child: Text(
-                          initial,
-                          style: const TextStyle(
-                            color: Color(0xFF135BEC),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                        return ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                        ),
-                      ),
-                      title: Text(
-                        tempName, // Replace with actual name when available
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        room.lastMessage.isNotEmpty
-                            ? room.lastMessage
-                            : 'Say hello...',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey.shade600),
-                      ),
-                      trailing: Text(
-                        _formatTime(room.lastMessageTime),
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 12,
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.chat,
-                          arguments: {
-                            'roomId': room.id,
-                            'currentUserId': currentUser.id,
-                            'otherUserName': tempName,
+                          tileColor: Colors.white,
+                          leading: CircleAvatar(
+                            radius: 24,
+                            backgroundColor: const Color(
+                              0xFFACC8A2,
+                            ).withValues(alpha: 0.1),
+                            child: Text(
+                              initial,
+                              style: const TextStyle(
+                                color: Color(0xFFACC8A2),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          title: Text(
+                            displayName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            room.lastMessage.isNotEmpty
+                                ? room.lastMessage
+                                : 'Say hello...',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                          trailing: Text(
+                            _formatTime(room.lastMessageTime),
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 12,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.chat,
+                              arguments: {
+                                'roomId': room.id,
+                                'currentUserId': currentUser.id,
+                                'otherUserName': displayName,
+                              },
+                            );
                           },
                         );
                       },

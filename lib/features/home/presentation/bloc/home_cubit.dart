@@ -20,7 +20,7 @@ class HomeCubit extends Cubit<HomeState> {
           id: '1',
           name: 'Cleaning',
           icon: Icons.cleaning_services,
-          color: Colors.blueAccent,
+          color: Color(0xFFACC8A2),
         ),
         const CategoryEntity(
           id: '2',

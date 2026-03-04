@@ -15,6 +15,7 @@ import 'package:needo/features/auth/domain/usecases/get_current_user_usecase.dar
 import 'package:needo/features/auth/domain/usecases/become_provider_usecase.dart';
 import 'package:needo/features/auth/domain/usecases/update_user_profile_usecase.dart';
 import 'package:needo/features/auth/domain/usecases/send_password_reset_email_usecase.dart';
+import 'package:needo/features/home/presentation/bloc/location_cubit.dart';
 import 'package:needo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:needo/features/auth/presentation/bloc/auth_event.dart';
 import 'package:needo/features/service_requests/data/datasources/service_request_remote_data_source.dart';
@@ -24,6 +25,7 @@ import 'package:needo/features/service_requests/domain/usecases/get_user_request
 import 'package:needo/features/service_requests/domain/usecases/cancel_request_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/get_open_requests_by_category_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/place_bid_usecase.dart';
+import 'package:needo/features/service_requests/domain/usecases/decline_bid_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/get_bids_for_request_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/accept_bid_usecase.dart';
 import 'package:needo/features/service_requests/domain/usecases/complete_job_usecase.dart';
@@ -119,6 +121,7 @@ void main() async {
   final getBidsForRequestUseCase = GetBidsForRequestUseCase(
     serviceRequestRepository,
   );
+  final declineBidUseCase = DeclineBidUseCase(serviceRequestRepository);
   final acceptBidUseCase = AcceptBidUseCase(serviceRequestRepository);
   final completeJobUseCase = CompleteJobUseCase(serviceRequestRepository);
   final rateProviderUseCase = RateProviderUseCase(serviceRequestRepository);
@@ -164,6 +167,7 @@ void main() async {
       getOpenRequestsByCategoryUseCase: getOpenRequestsByCategoryUseCase,
       placeBidUseCase: placeBidUseCase,
       getBidsForRequestUseCase: getBidsForRequestUseCase,
+      declineBidUseCase: declineBidUseCase,
       acceptBidUseCase: acceptBidUseCase,
       completeJobUseCase: completeJobUseCase,
       rateProviderUseCase: rateProviderUseCase,
@@ -193,6 +197,7 @@ class NeedoApp extends StatelessWidget {
   final GetOpenRequestsByCategoryUseCase getOpenRequestsByCategoryUseCase;
   final PlaceBidUseCase placeBidUseCase;
   final GetBidsForRequestUseCase getBidsForRequestUseCase;
+  final DeclineBidUseCase declineBidUseCase;
   final AcceptBidUseCase acceptBidUseCase;
   final CompleteJobUseCase completeJobUseCase;
   final RateProviderUseCase rateProviderUseCase;
@@ -222,6 +227,7 @@ class NeedoApp extends StatelessWidget {
     required this.getOpenRequestsByCategoryUseCase,
     required this.placeBidUseCase,
     required this.getBidsForRequestUseCase,
+    required this.declineBidUseCase,
     required this.acceptBidUseCase,
     required this.completeJobUseCase,
     required this.rateProviderUseCase,
@@ -266,6 +272,7 @@ class NeedoApp extends StatelessWidget {
                   getOpenRequestsByCategoryUseCase,
               placeBidUseCase: placeBidUseCase,
               getBidsForRequestUseCase: getBidsForRequestUseCase,
+              declineBidUseCase: declineBidUseCase,
               acceptBidUseCase: acceptBidUseCase,
               completeJobUseCase: completeJobUseCase,
               rateProviderUseCase: rateProviderUseCase,
@@ -281,6 +288,7 @@ class NeedoApp extends StatelessWidget {
               getUserChatRoomsUseCase: getUserChatRoomsUseCase,
             ),
           ),
+          BlocProvider<LocationCubit>(create: (_) => LocationCubit()),
         ],
         child: MaterialApp(
           title: 'Needo Service Marketplace',

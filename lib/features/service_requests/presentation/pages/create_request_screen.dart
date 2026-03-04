@@ -152,7 +152,7 @@ class _CreateServiceRequestScreenState
                     controller: _priceRangeController,
                     decoration: const InputDecoration(
                       labelText: 'Expected Price Range',
-                      hintText: 'e.g. \$50 - \$100',
+                      hintText: 'e.g. 50 - 100 PLN',
                     ),
                     validator: (value) => value == null || value.isEmpty
                         ? 'Please enter a price range'
@@ -166,16 +166,16 @@ class _CreateServiceRequestScreenState
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE8F4FD),
+                      color: const Color(0xFFACC8A2).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFF90CAF9)),
+                      border: Border.all(color: const Color(0xFFACC8A2)),
                     ),
                     child: const Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(
                           Icons.info_outline,
-                          color: Color(0xFF1565C0),
+                          color: Colors.black87,
                           size: 18,
                         ),
                         SizedBox(width: 10),
@@ -184,7 +184,7 @@ class _CreateServiceRequestScreenState
                             '💡 Payment is handled directly with the provider (Cash or Transfer) upon completion. No payments are taken through the app.',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF1565C0),
+                              color: Colors.black87,
                               height: 1.4,
                             ),
                           ),

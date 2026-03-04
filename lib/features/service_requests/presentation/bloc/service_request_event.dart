@@ -65,15 +65,17 @@ class PlaceBidEvent extends ServiceRequestEvent {
   final String requestId;
   final double price;
   final String note;
+  final String providerName;
 
   const PlaceBidEvent({
     required this.requestId,
     required this.price,
     required this.note,
+    required this.providerName,
   });
 
   @override
-  List<Object> get props => [requestId, price, note];
+  List<Object> get props => [requestId, price, note, providerName];
 }
 
 class LoadBidsForRequestEvent extends ServiceRequestEvent {
@@ -100,6 +102,16 @@ class AcceptBidEvent extends ServiceRequestEvent {
 
   @override
   List<Object> get props => [requestId, bidId, providerId, price];
+}
+
+class DeclineBidEvent extends ServiceRequestEvent {
+  final String requestId;
+  final String bidId;
+
+  const DeclineBidEvent({required this.requestId, required this.bidId});
+
+  @override
+  List<Object> get props => [requestId, bidId];
 }
 
 class CompleteJobEvent extends ServiceRequestEvent {

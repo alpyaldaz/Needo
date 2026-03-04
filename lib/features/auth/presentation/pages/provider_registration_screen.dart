@@ -105,7 +105,7 @@ class _ProviderRegistrationScreenState
                       labelText: 'Service Category',
                       border: OutlineInputBorder(),
                     ),
-                    value: _selectedCategory,
+                    initialValue: _selectedCategory,
                     items: _categories.map((category) {
                       return DropdownMenuItem(
                         value: category,
@@ -128,9 +128,9 @@ class _ProviderRegistrationScreenState
                   TextFormField(
                     controller: _rateController,
                     decoration: const InputDecoration(
-                      labelText: 'Hourly Rate (\$)',
+                      labelText: 'Hourly Rate (PLN)',
                       border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.attach_money),
+                      prefixIcon: Icon(Icons.payments_outlined),
                     ),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,

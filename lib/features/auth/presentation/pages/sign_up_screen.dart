@@ -41,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Needo Sign Up')),
+      appBar: AppBar(title: const Text('Create Account')),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -69,6 +69,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: 8),
+                  // Logo
+                  Align(
+                    alignment: Alignment.center,
+                    child: Image.asset('assets/images/logo.png', height: 100),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Create your account',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Sign up to start using Needo.',
+                    style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
                   TextFormField(
                     // Changed to TextFormField
                     controller: _nameController,

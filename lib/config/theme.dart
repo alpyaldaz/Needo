@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Primary Brand Colors (Stitch Modern Design)
-  static const Color _seedColor = Color(0xFF135BEC); // New Primary Blue
+  static const Color _seedColor = Color(0xFFACC8A2); // New Primary Light Green
   static const Color _scaffoldBackground = Color(0xFFF6F6F8);
 
   static ThemeData get lightTheme {

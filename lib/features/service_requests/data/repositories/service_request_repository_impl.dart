@@ -141,6 +141,21 @@ class ServiceRequestRepositoryImpl implements ServiceRequestRepository {
   }
 
   @override
+  Future<Either<Failure, void>> declineBid(
+    String requestId,
+    String bidId,
+  ) async {
+    try {
+      await remoteDataSource.declineBid(requestId, bidId);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> acceptBid(
     String requestId,
     String bidId,

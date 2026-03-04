@@ -126,14 +126,14 @@ class _ChatScreenState extends State<ChatScreen> {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isMe ? const Color(0xFF135BEC) : Colors.white,
+          color: isMe ? const Color(0xFFACC8A2) : Colors.white,
           borderRadius: BorderRadius.circular(20).copyWith(
             bottomRight: isMe ? const Radius.circular(4) : null,
             bottomLeft: !isMe ? const Radius.circular(4) : null,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -205,7 +205,7 @@ class _ChatScreenState extends State<ChatScreen> {
           const SizedBox(width: 12),
           Container(
             decoration: const BoxDecoration(
-              color: Color(0xFF135BEC),
+              color: Color(0xFFACC8A2),
               shape: BoxShape.circle,
             ),
             child: IconButton(

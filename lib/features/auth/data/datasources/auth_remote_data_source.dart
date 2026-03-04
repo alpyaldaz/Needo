@@ -149,6 +149,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       await userDocRef.update({
         'isProvider': true,
+        'role': 'provider',
         'providerCategory': categoryId,
         'hourlyRate': hourlyRate,
         'updatedAt': FieldValue.serverTimestamp(),
@@ -197,11 +198,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (name != null) updates['name'] = name;
       if (phone != null) updates['phone'] = phone;
       if (profileImageUrl != null) updates['profileImageUrl'] = profileImageUrl;
-      if (googleBusinessUrl != null)
+      if (googleBusinessUrl != null) {
         updates['googleBusinessUrl'] = googleBusinessUrl;
+      }
       if (about != null) updates['about'] = about;
-      if (providerCategory != null)
+      if (providerCategory != null) {
         updates['providerCategory'] = providerCategory;
+      }
 
       if (updates.isNotEmpty) {
         updates['updatedAt'] = FieldValue.serverTimestamp();
@@ -239,7 +242,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final snapshot = await firestore
           .collection('users')
-          .where('isProvider', isEqualTo: true)
+          .where('role', isEqualTo: 'provider')
           .orderBy('averageRating', descending: true)
           .limit(10)
           .get();

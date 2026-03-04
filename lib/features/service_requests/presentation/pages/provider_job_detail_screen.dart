@@ -24,10 +24,19 @@ class ProviderJobDetailScreen extends StatefulWidget {
 
 class _ProviderJobDetailScreenState extends State<ProviderJobDetailScreen> {
   void _showBidDialog() {
+    final authState = context.read<AuthBloc>().state;
+    String providerName = 'Provider';
+    if (authState is AuthAuthenticated) {
+      providerName = authState.user.name;
+    }
+
     showDialog(
       context: context,
       builder: (context) {
-        return _PlaceBidDialog(requestId: widget.job.id);
+        return _PlaceBidDialog(
+          requestId: widget.job.id,
+          providerName: providerName,
+        );
       },
     );
   }
@@ -87,7 +96,7 @@ class _ProviderJobDetailScreenState extends State<ProviderJobDetailScreen> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
-                          'Budget: \$${widget.job.priceRange}',
+                          'Budget: ${widget.job.priceRange} PLN',
                           style: TextStyle(
                             color: Colors.green.shade800,
                             fontWeight: FontWeight.bold,
@@ -121,13 +130,13 @@ class _ProviderJobDetailScreenState extends State<ProviderJobDetailScreen> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
+                      color: const Color(0xFFACC8A2).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
                       widget.job.status,
-                      style: TextStyle(
-                        color: Colors.blue.shade800,
+                      style: const TextStyle(
+                        color: Color(0xFFACC8A2),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -177,7 +186,7 @@ class _ProviderJobDetailScreenState extends State<ProviderJobDetailScreen> {
                   Icon(
                     Icons.access_time,
                     size: 20,
-                    color: Colors.blue.shade400,
+                    color: const Color(0xFFACC8A2).withValues(alpha: 0.5),
                   ),
                   const SizedBox(width: 8),
                   Column(
@@ -358,8 +367,8 @@ class _ProviderJobDetailScreenState extends State<ProviderJobDetailScreen> {
                         ),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: BorderSide(color: Colors.blue.shade700),
-                          foregroundColor: Colors.blue.shade700,
+                          side: const BorderSide(color: Color(0xFFACC8A2)),
+                          foregroundColor: const Color(0xFFACC8A2),
                         ),
                       ),
                     );
@@ -397,8 +406,9 @@ class _ProviderJobDetailScreenState extends State<ProviderJobDetailScreen> {
 
 class _PlaceBidDialog extends StatefulWidget {
   final String requestId;
+  final String providerName;
 
-  const _PlaceBidDialog({required this.requestId});
+  const _PlaceBidDialog({required this.requestId, required this.providerName});
 
   @override
   State<_PlaceBidDialog> createState() => _PlaceBidDialogState();
@@ -424,6 +434,7 @@ class _PlaceBidDialogState extends State<_PlaceBidDialog> {
           requestId: widget.requestId,
           price: amount,
           note: _noteController.text,
+          providerName: widget.providerName,
         ),
       );
       Navigator.pop(context); // Close the dialog immediately
@@ -442,8 +453,8 @@ class _PlaceBidDialogState extends State<_PlaceBidDialog> {
             TextFormField(
               controller: _amountController,
               decoration: const InputDecoration(
-                labelText: 'Bid Amount (\$)',
-                prefixIcon: Icon(Icons.attach_money),
+                labelText: 'Bid Amount (PLN)',
+                prefixIcon: Icon(Icons.payments_outlined),
                 border: OutlineInputBorder(),
               ),
               keyboardType: const TextInputType.numberWithOptions(
