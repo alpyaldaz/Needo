@@ -61,7 +61,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     final messagesRef = roomRef.collection('messages').doc(message.id);
 
     // 1. Add message
-    batch.set(messagesRef, message.toJson());
+    final messageData = message.toJson();
+    messageData['timestamp'] = FieldValue.serverTimestamp();
+    batch.set(messagesRef, messageData);
 
     // 2. Update room's last message
     batch.update(roomRef, {
