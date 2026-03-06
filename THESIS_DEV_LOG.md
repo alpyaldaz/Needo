@@ -1,6 +1,6 @@
-# Needo - Thesis Development Log
+# Needo - Thesis Development Phases
 
-## [2026-02-19] Initialization & Architectural Strategy
+## Phase 1: Initialization & Architectural Strategy
 
 ### Decision: Adoption of Clean Architecture & Serverless Infrastructure
 **Context:** The project "Needo" is a real-time service marketplace requiring high scalability and maintainability.
@@ -15,7 +15,7 @@
 1.  GCP Safety Setup (Billing Alerts & API Restrictions) [COMPLETED].
 2.  Implementation of the core folder structure [COMPLETED].
 
-## [2026-02-20] Project Initialization & Structure
+## Phase 2: Project Initialization & Structure
 
 ### Action: Flutter Project Created & Structured
 **Command Executed:** `flutter create --project-name needo --org com.needo .`
@@ -30,69 +30,67 @@ This structure implements **Clean Architecture**, ensuring:
 2.  **Testability:** Business rules can be tested without the UI, database, or network.
 3.  **Independence of UI:** The UI can change easily, without changing the rest of the system.
 
-
-### [2026-02-20] Core Configuration Implementation
+## Phase 3: Core Configuration Implementation
 
 ### Action: Theme & Routing Setup
 **Files Created:**
-*   `lib/config/theme.dart`: Implemented **Material 3** Theme Data.
-*   `lib/config/routes.dart`: Defined application routes string constants and map.
-*   `lib/main.dart`: Updated to use the new theme and route configuration.
+* `lib/config/theme.dart`: Implemented **Material 3** Theme Data.
+* `lib/config/routes.dart`: Defined application routes string constants and map.
+* `lib/main.dart`: Updated to use the new theme and route configuration.
 
 **Academic Justification:**
 1.  **Strict Material 3 Compliance:** Ensuring modern UI standards as per Google's design guidelines.
 2.  **Centralized Configuration:** By decoupling theme and routes from the main app widget, we maintain the single responsibility principle.
 
-
-### [2026-02-20] Auth Feature: Domain Layer Implemented
+## Phase 4: Auth Feature - Domain Layer
 
 ### Action: Core & Auth Domain Setup
 **Added Dependencies:** `fpdart` (functional error handling), `equatable` (value equality).
 **Core Abstractions Created:**
-*   `lib/core/error/failures.dart`: Base failure classes.
-*   `lib/core/usecases/usecase.dart`: Functional interface (`Either`) for all business operations.
+* `lib/core/error/failures.dart`: Base failure classes.
+* `lib/core/usecases/usecase.dart`: Functional interface (`Either`) for all business operations.
 **Auth Domain Implemented:**
-*   `UserEntity`: Pure Dart model.
-*   `AuthRepository` (Interface): Contracts for login, register.
-*   `LoginUseCase`: Specific business rule execution.
+* `UserEntity`: Pure Dart model.
+* `AuthRepository` (Interface): Contracts for login, register.
+* `LoginUseCase`: Specific business rule execution.
 
 **Academic Justification:**
 1.  **Dependency Inversion Principle:** The Domain Layer is 'pure' Dart. It dictates the rules to the Data layer via interfaces (Repositories). It has zero knowledge of Firebase or Flutter.
-### [2026-02-20] Auth Feature: Data Layer Implemented
+
+## Phase 5: Auth Feature - Data Layer
 
 ### Action: Firebase Integration & Repositories
 **Added Dependencies:** `firebase_auth`, `cloud_firestore`
 **Data Layer Implemented:**
-*   `UserModel`: Extends `UserEntity`. Added `fromJson` and `toJson` logic out of the Domain layer.
-*   `AuthRemoteDataSource`: Directly interacts with Firebase to fetch/write DocumentSnapshots.
-*   `AuthRepositoryImpl`: The critical bridge. It calls the Data Source resulting in a `UserModel`, catches raw Firebase exceptions, and translates them to `Either<Failure, UserEntity>` for the Domain layer.
+* `UserModel`: Extends `UserEntity`. Added `fromJson` and `toJson` logic out of the Domain layer.
+* `AuthRemoteDataSource`: Directly interacts with Firebase to fetch/write DocumentSnapshots.
+* `AuthRepositoryImpl`: The critical bridge. It calls the Data Source resulting in a `UserModel`, catches raw Firebase exceptions, and translates them to `Either<Failure, UserEntity>` for the Domain layer.
 
-**Academic Justification:**
-### [2026-02-20] Auth Feature: Presentation Layer Implemented
+## Phase 6: Auth Feature - Presentation Layer
 
 ### Action: State Management & UI Integration
 **Added Dependencies:** `flutter_bloc`
 **Presentation Layer Implemented:**
-*   `AuthEvent` & `AuthState`: Defined the strict inputs (e.g., `LoginRequestedEvent`) and outputs (e.g., `AuthLoading`, `Authenticated`) of the Auth feature.
-*   `AuthBloc`: The state machine. It listens to Events, executes the Domain `LoginUseCase`, and emits new States based on the `Either` result.
-*   `LoginScreen`: A purely declarative UI that listens to `AuthBloc` state changes (to show loading spinners or snappers) and triggers events on button press.
-*   `main.dart` (Dependency Injection): Initialized Firebase, instantiated the repositories/usecases, and injected the `AuthBloc` into the widget tree via `MultiBlocProvider`.
+* `AuthEvent` & `AuthState`: Defined the strict inputs (e.g., `LoginRequestedEvent`) and outputs (e.g., `AuthLoading`, `Authenticated`) of the Auth feature.
+* `AuthBloc`: The state machine. It listens to Events, executes the Domain `LoginUseCase`, and emits new States based on the `Either` result.
+* `LoginScreen`: A purely declarative UI that listens to `AuthBloc` state changes (to show loading spinners or snappers) and triggers events on button press.
+* `main.dart` (Dependency Injection): Initialized Firebase, instantiated the repositories/usecases, and injected the `AuthBloc` into the widget tree via `MultiBlocProvider`.
 
 **Academic Justification:**
 1.  **Unidirectional Data Flow:** By strictly using BLoC (Events in -> State out), the UI is completely predictable and easy to debug. The UI cannot randomly change state; it must dispatch an Event.
 2.  **Dependency Injection (IoC):** Instantiating the Repositories at the top level (`main.dart`) and passing them down demonstrates Inversion of Control. The BLoC doesn't know *how* `LoginUseCase` is created, it just uses it. This is a hallmark of enterprise-grade software architectures.
 
-### [2026-02-20] Phase 3: External Integrations
+## Phase 7: External Integrations
 
 ### Action: FlutterFire Auto-Configuration
 **Implemented Setup:**
-*   Utilized **FlutterFire CLI** to automatically generate platform-specific API configurations into `lib/firebase_options.dart`.
-*   Modified `main.dart` to execute `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)` before `runApp`.
+* Utilized **FlutterFire CLI** to automatically generate platform-specific API configurations into `lib/firebase_options.dart`.
+* Modified `main.dart` to execute `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)` before `runApp`.
 
 **Academic Justification:**
-*   **Decoupling Configuration:** Instead of hard-coding API keys in Android/iOS native files (legacy method), FlutterFire keeps configuration strictly within the Dart/Flutter environment. This minimizes platform-specific bugs and ensures API keys are not accidentally pushed to source control (if `firebase_options.dart` is added to `.gitignore`).
+* **Decoupling Configuration:** Instead of hard-coding API keys in Android/iOS native files (legacy method), FlutterFire keeps configuration strictly within the Dart/Flutter environment. This minimizes platform-specific bugs and ensures API keys are not accidentally pushed to source control (if `firebase_options.dart` is added to `.gitignore`).
 
-### [2026-02-20] Application Feature Extension: Registration Flow
+## Phase 8: Registration Flow
 
 ### Action: Implement Sign Up
 **Implementation Pipeline:**
@@ -102,10 +100,9 @@ This structure implements **Clean Architecture**, ensuring:
 4.  **Integration:** Provided `RegisterUseCase` to `AuthBloc` via `main.dart` dependency injection. Button added to `LoginScreen` for navigation.
 
 **Academic Justification:**
-*   **Feature Expansion Resilience:** This addition demonstrated how Clean Architecture absorbs new features. We added Registration *without changing the Data Layer* (since `registerCustomer` was already defined in the interface and implemented in Firebase). We only extended Domain (UseCase) and Presentation (BLoC/UI). This proves the architecture's maintainability.
+* **Feature Expansion Resilience:** This addition demonstrated how Clean Architecture absorbs new features. We added Registration *without changing the Data Layer* (since `registerCustomer` was already defined in the interface and implemented in Firebase). We only extended Domain (UseCase) and Presentation (BLoC/UI). This proves the architecture's maintainability.
 
-
-### [2026-02-20] Application Feature Extension: Main Dashboard Layout
+## Phase 9: Main Dashboard Layout
 
 ### Action: Implement IndexedStack Architecture
 **Implementation Pipeline:**
@@ -114,9 +111,9 @@ This structure implements **Clean Architecture**, ensuring:
 3.  **State Retention:** Implemented `IndexedStack` linked to a `BottomNavigationBar`.
 
 **Academic Justification:**
-*   **Performance Optimization (IndexedStack):** Using `IndexedStack` instead of constantly pushing/popping routes using `Navigator` ensures that the state of each tab (e.g., scroll position in the Requests list) is preserved in memory. It prevents unnecessary widget rebuilds and network re-fetches, which is crucial for a responsive mobile application.
+* **Performance Optimization (IndexedStack):** Using `IndexedStack` instead of constantly pushing/popping routes using `Navigator` ensures that the state of each tab (e.g., scroll position in the Requests list) is preserved in memory. It prevents unnecessary widget rebuilds and network re-fetches, which is crucial for a responsive mobile application.
 
-### [2026-02-20] Application Feature Extension: Home Screen UI
+## Phase 10: Home Screen UI
 
 ### Action: Implement Home Screen Layout and Cubit
 **Implementation Pipeline:**
@@ -124,16 +121,15 @@ This structure implements **Clean Architecture**, ensuring:
 2.  **State Management:** Created `HomeCubit` to simulate an asynchronous network request that fetches and emits dummy categories and featured providers.
 3.  **Presentation (UI):** Built `HomeScreen` featuring a search bar in the `AppBar`, a `GridView` for categorized services, and a horizontal `ListView` for Popular Services. 
 
-### [2026-02-20] Application Feature Extension: Service Request Flow (Customer)
+## Phase 11: Service Request Flow (Customer)
 
 ### Action: Implement Domain, Data, and Presentation Layers
 **Implementation Pipeline:**
 1.  **Domain:** Created `ServiceRequestEntity` (id, userId, categoryId, etc.) and `ServiceRequestRepository` interface with `createRequest`.
-2.  **Data:** 
-    *   Created `ServiceRequestModel` with `fromJson`/`toJson` mappings for Firestore (including translating standard `DateTime` to Firestore `Timestamp`).
-    *   Implemented `ServiceRequestRemoteDataSourceImpl` pointing to a `'requests'` top-level collection.
-    *   Implemented `ServiceRequestRepositoryImpl` to catch Firebase exceptions and return Clean Architecture `Failure` objects via `Either`.
-    *   Added `ServerException` class for robust error handling.
+2.  **Data:** * Created `ServiceRequestModel` with `fromJson`/`toJson` mappings for Firestore (including translating standard `DateTime` to Firestore `Timestamp`).
+    * Implemented `ServiceRequestRemoteDataSourceImpl` pointing to a `'requests'` top-level collection.
+    * Implemented `ServiceRequestRepositoryImpl` to catch Firebase exceptions and return Clean Architecture `Failure` objects via `Either`.
+    * Added `ServerException` class for robust error handling.
 3.  **Presentation (UI):** Built `CreateServiceRequestScreen` featuring form validation, Date Pickers, and `TextFormField`s.
 4.  **Routing:** Adjusted `routes.dart` to use `onGenerateRoute` for `/create-request`, allowing passing of the `categoryId` payload extracted from the Home Screen category grid.
 
@@ -144,7 +140,7 @@ This structure implements **Clean Architecture**, ensuring:
 3.  **Dependency Injection:** Injected `ServiceRequestRemoteDataSource`, `ServiceRequestRepository`, `CreateRequestUseCase`, and `ServiceRequestBloc` via `MultiBlocProvider` in `main.dart`.
 4.  **UI Wiring:** Refactored `CreateServiceRequestScreen` body to use `BlocConsumer`. It dispatches the event on submit and reacts to `ServiceRequestSuccess` by popping the screen and showing a success SnackBar.
 
-### [2026-02-21] Application Feature Extension: Service Request List (Read Flow)
+## Phase 12: Service Request List (Read Flow)
 
 ### Action: Implement Real-Time Firestore Streaming
 **Implementation Pipeline:**
@@ -154,12 +150,9 @@ This structure implements **Clean Architecture**, ensuring:
 4.  **Presentation (UI):** Built `RequestsScreen` mapping `ServiceRequestsLoaded` state to a `ListView.builder`. Designed distinct UI Cards for requests, including status color-coding (Open: Orange, Completed: Green, Cancelled: Red) and formatted dates using `intl`. Connected the screen to the `IndexedStack` inside `MainLayout`.
 
 **Academic Justification:**
-*   **Reactive Data Flow (Streams):** By mapping a Firestore `snapshot()` stream all the way through the Data and Domain layers into the BLoC, the UI becomes purely reactive. If a request status changes in the database, the BLoC automatically receives the new stream chunk and emits a new state, updating the UI instantly without requiring pulling/refreshing. This represents a modern, highly responsive data architecture.
+* **Reactive Data Flow (Streams):** By mapping a Firestore `snapshot()` stream all the way through the Data and Domain layers into the BLoC, the UI becomes purely reactive. If a request status changes in the database, the BLoC automatically receives the new stream chunk and emits a new state, updating the UI instantly without requiring pulling/refreshing. This represents a modern, highly responsive data architecture.
 
-
-
-
-## [2026-02-22] Feature Extension: User Profile & Authentication Control
+## Phase 13: User Profile & Authentication Control
 
 ### Action: Implement Logout & Profile Management
 **Implementation Pipeline:**
@@ -172,7 +165,8 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Session Management Security:** By strictly clearing the navigation stack upon logout, we adhere to secure session handling practices, ensuring that cached user data in the widget tree is disposed of immediately.
 
-## [2026-02-22] Feature Extension: Request Lifecycle Management (Cancellation)
+## Phase 14: Request Lifecycle Management (Cancellation)
+
 ### Action: Implement Request Cancellation Logic
 **Implementation Pipeline:**
 1.  **Domain:** Created `CancelRequestUseCase`.
@@ -183,7 +177,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Finite State Machine (FSM):** The request lifecycle (Open -> Cancelled) is enforced by both UI logic (conditional button) and backend validation, representing a robust FSM implementation.
 
-## [2026-02-22] Phase 4: Service Provider Module (Supply Side)
+## Phase 15: Service Provider Module (Supply Side)
 
 ### Action: Provider Registration & Dashboard
 **Implementation Pipeline:**
@@ -195,7 +189,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Role-Based Access Control (RBAC):** The system dynamically adjusts the UI and data access privileges based on the `isProvider` flag, demonstrating a scalable RBAC architecture within a single application codebase.
 
-## [2026-02-22] Phase 5 & 6: Bidding System (Sub-collection Architecture)
+## Phase 16: Bidding System (Sub-collection Architecture)
 
 ### Action: Implement Bidding Logic
 **Implementation Pipeline:**
@@ -207,7 +201,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **NoSQL Data Modeling:** The decision to use sub-collections demonstrates an understanding of NoSQL access patterns (Accessing Parent -> Fetching Children), optimizing read costs and organizing data logically.
 
-## [2026-02-23] Phase 7: Marketplace Transaction (Acceptance)
+## Phase 17: Marketplace Transaction (Acceptance)
 
 ### Action: Implement Bid Acceptance Flow
 **Implementation Pipeline:**
@@ -221,7 +215,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Atomic Data Consistency:** Critical business logic (assigning a provider and changing status) happens in a single operation, preventing race conditions where a request could be accepted by multiple providers simultaneously.
 
-## [2026-02-23] Phase 8: Job Completion & Rating System
+## Phase 18: Job Completion & Rating System
 
 ### Action: Close Loop & Feedback Mechanism
 **Implementation Pipeline:**
@@ -234,7 +228,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Full Lifecycle Management:** The system now handles the complete Service Lifecycle: `Draft -> Open -> Bidded -> In Progress -> Completed -> Rated`. This satisfies the core requirement of a Service Marketplace Thesis.
 
-## [2026-02-24] Phase 10: UI/UX Overhaul (Design System Integration)
+## Phase 19: UI/UX Overhaul (Design System Integration)
 
 ### Action: Adoption of "Stitch" Design System
 **Implementation Pipeline:**
@@ -250,9 +244,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Human-Computer Interaction (HCI):** The transition from stock Material Design to a custom Design System demonstrates attention to Usability Heuristics (Consistency, Aesthetics, and Minimalist Design).
 
-
-
-## [2026-02-28] Phase 11 & 12: Real-Time Communication System
+## Phase 20: Real-Time Communication System
 
 ### Action: Implementation of Real-Time Chat (Sockets via Firestore)
 **Context:** To facilitate negotiation and service coordination, users need a seamless, real-time messaging system within the application, eliminating the need to share personal phone numbers.
@@ -267,8 +259,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Event-Driven Architecture:** Utilizing Firestore's native WebSocket connection (`snapshots()`) demonstrates an understanding of event-driven, real-time data synchronization across distributed mobile clients without implementing custom socket servers.
 
-
-## [2026-02-28] Phase 13: Centralized Inbox & Navigation Optimization
+## Phase 21: Centralized Inbox & Navigation Optimization
 
 ### Action: Implementation of Chat List Screen
 **Implementation Pipeline:**
@@ -280,8 +271,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Information Architecture:** Moving from deeply nested chat access (via job details) to a top-level Bottom Navigation Tab significantly improves the application's Information Architecture and overall discoverability (Nielsen's Heuristics).
 
-
-## [2026-02-28] Phase 14: Dynamic Showcase & Data Robustness
+## Phase 22: Dynamic Showcase & Data Robustness
 
 ### Action: Home Screen Revamp & Null-Safety Audit
 **Implementation Pipeline:**
@@ -293,8 +283,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **Graceful Degradation & Fault Tolerance:** The implementation of rigorous null-checking demonstrates a mature approach to software engineering, ensuring system stability and continuous operation even when the underlying data schema evolves or legacy data is malformed.
 
-
-## [2026-02-28] Phase 15: Business Model Clarification (Lead Generation)
+## Phase 23: Business Model Clarification (Lead Generation)
 
 ### Action: UI/UX Enforcement of the Matchmaking Model
 **Context:** The strategic decision was made to operate strictly as a "Lead Generation" platform, excluding in-app payment processing (e.g., Stripe/PayPal) to maintain MVP scope and avoid regulatory complexities.
@@ -307,8 +296,7 @@ This structure implements **Clean Architecture**, ensuring:
 **Academic Justification:**
 * **System Transparency:** By explicitly communicating the boundary of the system's responsibility (matchmaking vs. payment processing) through the UI, the application builds user trust and aligns user expectations with the system's capabilities, a core principle of UX design.
 
-
-## [2026-02-28] Phase 16: Profile Management & Role Flexibility
+## Phase 24: Profile Management & Role Flexibility
 
 ### Action: Implementation of Edit Profile Module
 **Implementation Pipeline:**
@@ -319,3 +307,14 @@ This structure implements **Clean Architecture**, ensuring:
 
 **Academic Justification:**
 * **Scope Management & MVP Focus:** The deliberate exclusion of complex media handling in favor of robust text-based management illustrates effective project scoping and prioritization, ensuring the core marketplace loop remains stable and demonstrable for the thesis defense.
+
+## Phase 25: Final Engineering Polish & Audit
+
+### Action: Real-time Batch Optimizations & Codebase Review
+**Implementation Pipeline:**
+1.  **Atomic Chat Writes:** Refactored the `sendMessage` function to utilize Firestore `WriteBatch`. This ensures that creating a new message document and updating the parent chat room's `lastMessage` preview occur simultaneously, guaranteeing UI data consistency across the application.
+2.  **Server Timestamping:** Standardized all temporal data generation to use `FieldValue.serverTimestamp()` instead of local device time, eliminating chronological anomalies caused by timezone differences or incorrect local client clocks.
+3.  **Academic Linting & Formatting:** Conducted a final rigorous codebase audit (`dart analyze`), ensuring 100% compliance with Clean Architecture naming conventions (`Entity` vs `Model`), removing legacy dead code, and standardizing inline documentation.
+
+**Academic Justification:**
+* **Data Consistency & Atomicity:** Upgrading the chat system to use `WriteBatch` proves a strong understanding of distributed systems challenges. It prevents scenarios where a message is saved but the inbox preview fails to update due to network latency, ensuring strict AC (Atomicity & Consistency) compliance within a NoSQL context.
