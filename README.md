@@ -1,16 +1,34 @@
-# needo
+# Needo - Mobile Marketplace for On-Site Services
 
-A new Flutter project.
+Needo is a cross-platform mobile marketplace application designed to seamlessly connect customers with local service providers. Developed as part of a BEng Engineering Thesis, this project demonstrates the implementation of modern cloud-native architectures and real-time distributed systems.
 
-## Getting Started
+## 🏗 System Architecture
 
-This project is a starting point for a Flutter application.
+The application strictly adheres to **Clean Architecture** principles, ensuring a robust separation of concerns:
+- **Presentation Layer:** Flutter UI components integrated with the **BLoC/Cubit** state management pattern.
+- **Domain Layer:** Pure Dart business logic containing Use Cases and Entity models.
+- **Data Layer:** Repository implementations and remote data sources handling Firebase APIs.
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Tech Stack
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Frontend:** Flutter & Dart
+- **Backend (BaaS):** Google Firebase (Serverless)
+- **Database:** Cloud Firestore (NoSQL Document Database)
+- **Authentication:** Firebase Auth (Email/Password)
+- **State Management:** `flutter_bloc`
+- **Functional Programming:** `fpdart`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## ✨ Core Features
+
+- **Role-Based Access Control (RBAC):** Distinct interfaces and capabilities for 'Customers' and 'Service Providers'.
+- **Real-Time Bidding System:** Providers can discover open requests and submit competitive bids.
+- **Atomic Transactions:** Secure bid acceptance utilizing Firestore `WriteBatch`.
+- **Real-Time Chat Engine:** Built-in messaging system using Firestore `snapshots()`.
+- **Lifecycle Management:** Complete state machine tracking for service requests (Open -> In Progress -> Completed).
+
+## 📚 Technical Documentation
+
+For an in-depth understanding of the system's design and development lifecycle, please refer to the following documents included in this repository:
+
+1. **[System Architecture & Technical Design (Start.md)](Start.md):** Detailed problem statement, target audience, advanced database schema, MVP boundaries, and security architecture.
+2. **[Thesis Development Log (THESIS_DEV_LOG.md)](THESIS_DEV_LOG.md):** A phase-by-phase engineering diary explaining the academic justification behind every technical decision, including Clean Architecture adoption and Serverless infrastructure.
